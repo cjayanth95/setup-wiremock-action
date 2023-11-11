@@ -1,4 +1,4 @@
-name: 'Setup Wiremock'
+name: 'wiremock action'
 author: 'William Haw'
 branding:
   icon: 'box'
