@@ -6,7 +6,7 @@ const cp = require("child_process");
 const process = require("process");
 const got = require("got");
 
-const wiremockVersion = "2.7.1";
+const wiremockVersion = "3.3.1";
 const wiremockStdOutPath = "out.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
@@ -37,7 +37,7 @@ const installWiremockFromToolCache = async () => {
     return { wiremockPath: path.join(wiremockPath, wiremockArtifactName) };
   } else {
     wiremockPath = await tc.downloadTool(
-      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/${wiremockArtifactName}`
+      `https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/${wiremockVersion}/${wiremockArtifactName}`
     );
     const cachedPath = await tc.cacheFile(
       wiremockPath,
