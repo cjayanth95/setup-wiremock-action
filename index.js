@@ -6,7 +6,7 @@ const cp = require("child_process");
 const process = require("process");
 const got = require("got");
 
-const wiremockVersion = "2.7.1";
+const wiremockVersion = "3.0.0";
 const wiremockStdOutPath = "out.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
