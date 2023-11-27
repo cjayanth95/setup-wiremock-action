@@ -73,6 +73,7 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
   const options = {
     cwd: cwd,
     detached: true,
+    stdio: 'ignore'
   };
   let args = ["-jar", wiremockPath];
   if (isVerboseLogging) {
@@ -80,12 +81,18 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
   }
   args.push("--global-response-templating");
   const wiremockProcess = cp.spawn("java", args, options);
-  wiremockProcess.stdout.on("data", (data) => {
-    wiremockStdOut.write(data.toString("utf8"));
-  });
+  wiremockProcess.unref();
   return wiremockProcess;
 };
 
+const writePIDfile = (wiremockProcess) => {
+  fs.writeFile('wiremock.pid', `${wiremockProcess.pid}`, err => {
+    if (err) {
+      console.error(err);
+      throw "Could not write PID file";
+    }
+  })
+}
 const isWireMockRunning = async (httpPort) => {
   try {
     const retry = {
@@ -157,7 +164,7 @@ Main logic starts
     );
 
     var wiremockProcess = startWireMock(wiremockPath, isVerboseLogging);
-
+    writePIDfile(wiremockProcess);
     var isRunning = await isWireMockRunning(httpPort);
 
     if (isRunning) {
@@ -178,18 +185,16 @@ Main logic starts
     core.setFailed(error.message);
   } finally {
     if (wiremockProcess) {
-      await shutdownWiremock(wiremockProcess);
+      // await shutdownWiremock(wiremockProcess);
     }
     setActionOutput();
     cleanupFiles(wiremockMappingsPath, wiremockFilesPath);
     if (!(isRunning && isTestRunSucceeded)) {
       core.setFailed("Errors during test setup");
-      process.exit(1);
     }
   }
 })().catch((error) => {
   core.setFailed(error.message);
-  process.exit(1);
 });
 
 /*
