@@ -81,9 +81,6 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
   }
   args.push("--global-response-templating");
   const wiremockProcess = cp.spawn("java", args, options);
-  wiremockProcess.stdout.on("data", (data) => {
-    wiremockStdOut.write(data.toString("utf8"));
-  });
   wiremockProcess.unref();
   return wiremockProcess;
 };
